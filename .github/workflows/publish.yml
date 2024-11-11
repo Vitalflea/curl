@@ -74,7 +74,9 @@ jobs:
 
           # Set the highest version as an output variable for later use
           echo "VERSION=$highestVersion" >> $GITHUB_ENV
+          echo "Highest version is $highestVersion"
 
       - name: Publish to GitHub Packages
         run: |
           dotnet nuget push "curl-static-${{ env.VERSION }}.nupkg" --api-key ${{ secrets.NUGET_TOKEN }} --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+          
