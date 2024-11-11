@@ -37,18 +37,28 @@ jobs:
       - name: Get latest version of curl-static
         id: get_version
         run: |
-          # Get the list of curl-static packages from the NuGet source
-          $package_list = nuget list curl-static -Source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" -AllVersions
-          
+          # Capture the output of the nuget list command without warnings
+          $package_list = nuget list curl-static -Source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" -AllVersions 2>&1
+
+          # Check for errors or warnings
+          if ($package_list -match "WARNING") {
+            Write-Host "Warning: nuget list returned a warning"
+            Write-Host $package_list
+          }
+
           # Extract the versions and sort them
           $versions = $package_list | ForEach-Object { ($_ -split '\s+')[0] } | Sort-Object
-          
+
           # Get the latest version (the highest one)
-          $latest_version = $versions[-1] -replace 'curl-static.', ''
-          
-          Write-Host "Latest version: $latest_version"
-          echo "::set-output name=version::$latest_version"
-      
+          if ($versions.Count -gt 0) {
+            $latest_version = $versions[-1] -replace 'curl-static.', ''
+            Write-Host "Latest version: $latest_version"
+            echo "::set-output name=version::$latest_version"
+          } else {
+            Write-Error "No versions found for curl-static."
+            exit 1
+          }
+
       - name: Publish to GitHub Packages
         run: |
           latest_version=${{ steps.get_version.outputs.version }}
