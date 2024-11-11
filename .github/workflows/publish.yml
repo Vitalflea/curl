@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -30,16 +30,19 @@ jobs:
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: '6.0'  # Set your required .NET version
-          
+
       - name: Authenticate with GitHub Packages
         run: dotnet nuget add source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --name GitHubPackages --username ${{ github.actor }} --password ${{ secrets.NUGET_TOKEN }}
-     
-      - name: Find the highest version of the .nupkg file
-        run: |
-          highest_version=$(ls curl-static*.nupkg | sort -V | tail -n 1)
-          echo "Highest version: $highest_version"
-          echo "highest_version=$highest_version" >> $GITHUB_ENV  # Store the highest version in the environment variable
 
+      - name: Get latest version of curl-static
+        id: get_version
+        run: |
+          latest_version=$(nuget list curl-static -Source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" | sort -V | tail -n 1 | awk '{print $1}' | sed 's/curl-static.//')
+          echo "Latest version: $latest_version"
+          echo "::set-output name=version::$latest_version"
+      
       - name: Publish to GitHub Packages
         run: |
-          dotnet nuget push ${{ env.highest_version }} --api-key ${{ secrets.NUGET_TOKEN }} --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+          latest_version=${{ steps.get_version.outputs.version }}
+          echo "Publishing curl-static version $latest_version"
+          dotnet nuget push curl-static.$latest_version.nupkg --api-key ${{ secrets.NUGET_TOKEN }} --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
