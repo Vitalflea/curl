@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>curl-static</id> <!-- Unique ID for your package -->
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <authors>Vitalflea</authors>
     <owners>Vitalflea</owners>
     <projectUrl>https://github.com/Vitalflea/curl</projectUrl>
@@ -14,5 +14,6 @@
 	<file src="curl.png" target="curl.png" />
     <file src="include\**\*" target="packages\curl\include" />
     <file src="lib\**\*" target="packages\curl\lib" />
+	<file src="lib\native\**" target="lib\native" />
   </files>
 </package>
