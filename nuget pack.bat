@@ -1,3 +1,3 @@
 @echo off
-nuget pack curl.nuspec
+nuget pack curl-static.nuspec
 pause
