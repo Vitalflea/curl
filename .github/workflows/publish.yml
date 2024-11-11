@@ -33,7 +33,13 @@ jobs:
           
       - name: Authenticate with GitHub Packages
         run: dotnet nuget add source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --name GitHubPackages --username ${{ github.actor }} --password ${{ secrets.NUGET_TOKEN }}
+     
+      - name: Find the highest version of the .nupkg file
+        run: |
+          highest_version=$(ls curl-static*.nupkg | sort -V | tail -n 1)
+          echo "Highest version: $highest_version"
+          echo "highest_version=$highest_version" >> $GITHUB_ENV  # Store the highest version in the environment variable
 
       - name: Publish to GitHub Packages
         run: |
-          dotnet nuget push curl-static.1.0.0.nupkg --api-key ${{ secrets.NUGET_TOKEN }} --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+          dotnet nuget push ${{ env.highest_version }} --api-key ${{ secrets.NUGET_TOKEN }} --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
