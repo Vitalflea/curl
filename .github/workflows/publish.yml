@@ -11,20 +11,10 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Cache .NET SDK
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.dotnet
-            ~/.nuget/packages
-          key: ${{ runner.os }}-dotnet-${{ hashFiles('**/*.csproj') }}
-          restore-keys: |
-            ${{ runner.os }}-dotnet-
         
       - name: Set up .NET
         uses: actions/setup-dotnet@v2
@@ -49,8 +39,7 @@ jobs:
           $highestVersion = $versionNumbers | Sort-Object -Descending | Select-Object -First 1
          
           echo "::set-output name=VERSION::$highestVersion"
-
+          
       - name: Publish to GitHub Packages
         run: |
-          dotnet nuget push "curl-static-${{ steps.get_version.outputs.VERSION }}.nupkg" --api-key ${{ secrets.NUGET_TOKEN }} --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
-    
+          dotnet nuget push curl-static-${{ steps.get_version.outputs.VERSION }}.nupkg --api-key ${{ secrets.NUGET_TOKEN }} --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
