@@ -46,8 +46,13 @@ jobs:
           # Extract version numbers from file names
           $versionNumbers = $nupkgFiles | 
             ForEach-Object {
-              # Extract version from the file name (e.g., curl-static-1.0.0.nupkg)
+              # Print the filename for debugging
+              Write-Host "Processing file: $($_.Name)"
+
+              # Extract version from the file name (e.g., curl-static-1.0.1.nupkg)
               if ($_ -match 'curl-static-(\d+\.\d+\.\d+)\.nupkg') {
+                # Print the extracted version
+                Write-Host "Extracted version: $($matches[1])"
                 [version]$matches[1]
               }
             }
