@@ -73,7 +73,7 @@ jobs:
           }
 
           # Set the highest version as an output variable for later use
-          echo "VERSION=$highestVersion" >> $GITHUB_ENV
+          echo "VERSION=$highestVersion" >> "$GITHUB_ENV"
 
       - name: Publish to GitHub Packages
         run: |
