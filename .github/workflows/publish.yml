@@ -21,9 +21,6 @@ jobs:
         with:
           dotnet-version: '6.0'  # Set your required .NET version
 
-      - name: Build the project
-        run: dotnet build --configuration Release
-
       - name: Pack the project
         run: dotnet pack --configuration Release --output ./nupkg
 
