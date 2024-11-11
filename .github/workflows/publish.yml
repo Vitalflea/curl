@@ -42,4 +42,4 @@ jobs:
           
       - name: Publish to GitHub Packages
         run: |
-          dotnet nuget push curl-static.1.0.1.nupkg --source https://www.nuget.org/api/v2/package --api-key ${{ secrets.NUGET_TOKEN }}
+          dotnet nuget push curl-static-${{ steps.get_version.outputs.VERSION }}.nupkg --source https://www.nuget.org/api/v2/package --api-key ${{ secrets.NUGET_TOKEN }}
