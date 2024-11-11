@@ -30,37 +30,28 @@ jobs:
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: '6.0'  # Set your required .NET version
-
+          
       - name: Authenticate with GitHub Packages
         run: dotnet nuget add source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --name GitHubPackages --username ${{ github.actor }} --password ${{ secrets.NUGET_TOKEN }}
 
-      - name: Get latest version of curl-static
-        id: get_version
+      - name: Get the highest version of curl-static
         run: |
-          # Capture the output of the nuget list command without warnings
-          $package_list = nuget list curl-static -Source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" -AllVersions 2>&1
+          # Find all .nupkg files in the root directory
+          $nupkgFiles = Get-ChildItem -Path . -Filter "curl-static*.nupkg"
+          
+          # Extract version numbers and find the highest one
+          $highestVersion = $nupkgFiles | 
+            ForEach-Object {
+              # Extract version from the file name (e.g., curl-static-1.0.0.nupkg)
+              if ($_ -match 'curl-static-(\d+\.\d+\.\d+)\.nupkg') {
+                [version]$matches[1]
+              }
+            } | Sort-Object -Descending | Select-Object -First 1
 
-          # Check for errors or warnings
-          if ($package_list -match "WARNING") {
-            Write-Host "Warning: nuget list returned a warning"
-            Write-Host $package_list
-          }
-
-          # Extract the versions and sort them
-          $versions = $package_list | ForEach-Object { ($_ -split '\s+')[0] } | Sort-Object
-
-          # Get the latest version (the highest one)
-          if ($versions.Count -gt 0) {
-            $latest_version = $versions[-1] -replace 'curl-static.', ''
-            Write-Host "Latest version: $latest_version"
-            echo "::set-output name=version::$latest_version"
-          } else {
-            Write-Error "No versions found for curl-static."
-            exit 1
-          }
+          # Set the highest version as an output variable for later use
+          echo "Highest version is $highestVersion"
+          echo "VERSION=$highestVersion" >> $GITHUB_ENV
 
       - name: Publish to GitHub Packages
         run: |
-          latest_version=${{ steps.get_version.outputs.version }}
-          echo "Publishing curl-static version $latest_version"
-          dotnet nuget push curl-static.$latest_version.nupkg --api-key ${{ secrets.NUGET_TOKEN }} --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+          dotnet nuget push "curl-static-${{ env.VERSION }}.nupkg" --api-key ${{ secrets.NUGET_TOKEN }} --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
