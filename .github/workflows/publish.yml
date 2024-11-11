@@ -50,8 +50,7 @@ jobs:
               Write-Host "Processing file: $($_.Name)"
 
               # Extract version from the file name (e.g., curl-static-1.0.1.nupkg)
-              if ($_ -match 'curl-static-(\d+\.\d+\.\d+)\.nupkg') {
-                # Print the extracted version
+              if ($_..Name -match '(\d+\.\d+\.\d+)') {
                 Write-Host "Extracted version: $($matches[1])"
                 [version]$matches[1]
               }
