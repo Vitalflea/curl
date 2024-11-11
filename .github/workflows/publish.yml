@@ -39,17 +39,36 @@ jobs:
           # Find all .nupkg files in the root directory
           $nupkgFiles = Get-ChildItem -Path . -Filter "curl-static*.nupkg"
           
-          # Extract version numbers and find the highest one
-          $highestVersion = $nupkgFiles | 
+          # Print all found .nupkg files
+          Write-Host "Found .nupkg files:"
+          $nupkgFiles
+
+          # Extract version numbers from file names
+          $versionNumbers = $nupkgFiles | 
             ForEach-Object {
               # Extract version from the file name (e.g., curl-static-1.0.0.nupkg)
               if ($_ -match 'curl-static-(\d+\.\d+\.\d+)\.nupkg') {
                 [version]$matches[1]
               }
-            } | Sort-Object -Descending | Select-Object -First 1
+            }
+
+          # Print extracted version numbers for debugging
+          Write-Host "Extracted version numbers:"
+          $versionNumbers
+
+          # Find the highest version
+          $highestVersion = $versionNumbers | Sort-Object -Descending | Select-Object -First 1
+
+          # Print the highest version found
+          Write-Host "Highest version is $highestVersion"
+
+          # If no version found, set a default or error
+          if ($null -eq $highestVersion) {
+            Write-Error "No valid version found for curl-static"
+            exit 1
+          }
 
           # Set the highest version as an output variable for later use
-          echo "Highest version is $highestVersion"
           echo "VERSION=$highestVersion" >> $GITHUB_ENV
 
       - name: Publish to GitHub Packages
