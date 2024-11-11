@@ -7,7 +7,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(MSBuildThisFileDirectory)lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libcurl.lib;libssl.lib;zlib.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;wldap32.lib;crypt32.lib;libcurl.lib;libssl.lib;zlib.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
 </Project>
