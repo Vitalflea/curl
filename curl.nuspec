@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>libcurl-custom</id> <!-- Unique ID for your package -->
+    <version>1.0.0</version>
+    <authors>Your Name</authors>
+    <owners>Your Name</owners>
+    <license type="file">LICENSE.txt</license> <!-- Include a license file if applicable -->
+    <projectUrl>https://github.com/Vitalflea/curl</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/Viutalflea/libcurl-package/main/curl.png</iconUrl>
+    <description>A custom NuGet package for libcurl with SSL/TLS support.</description>
+    <tags>libcurl C++</tags>
+  </metadata>
+  <files>
+    <file src="include\**\*" target="build\native\include" />
+    <file src="lib\**\*" target="build\native\lib" />
+  </files>
+</package>
