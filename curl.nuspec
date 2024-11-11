@@ -2,18 +2,18 @@
 <package>
   <metadata>
     <id>curl-static</id> <!-- Unique ID for your package -->
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <authors>Vitalflea</authors>
     <owners>Vitalflea</owners>
     <projectUrl>https://github.com/Vitalflea/curl</projectUrl>
     <icon>curl.png</icon>
-    <description>A custom NuGet package for libcurl with SSL/TLS support.</description>
+    <description>Pre-compiled libcurl binaries for vc143. I made this because any other packages did not work for me!</description>
     <tags>libcurl C++</tags>
   </metadata>
   <files>
 	<file src="curl.png" target="curl.png" />
-    <file src="include\**\*" target="packages\curl\include" />
-    <file src="lib\**\*" target="packages\curl\lib" />
-	<file src="lib\native\**" target="lib\native" />
+    <file src="include\**\*" target="packages\curl\lib\native\include" />
+    <file src="lib\**\*" target="packages\curl\lib\native\lib" />
+	<file src="curl.targets" target="packages\curl\build\native" />
   </files>
 </package>
