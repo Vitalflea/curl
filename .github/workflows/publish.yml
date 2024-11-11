@@ -37,11 +37,17 @@ jobs:
       - name: Get latest version of curl-static
         id: get_version
         run: |
-          $package_list = nuget list curl-static -Source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
-          $latest_version = $package_list | Sort-Object | Select-Object -Last 1
-          $version_number = $latest_version -replace 'curl-static.', ''
-          Write-Host "Latest version: $version_number"
-          echo "::set-output name=version::$version_number"
+          # Get the list of curl-static packages from the NuGet source
+          $package_list = nuget list curl-static -Source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" -AllVersions
+          
+          # Extract the versions and sort them
+          $versions = $package_list | ForEach-Object { ($_ -split '\s+')[0] } | Sort-Object
+          
+          # Get the latest version (the highest one)
+          $latest_version = $versions[-1] -replace 'curl-static.', ''
+          
+          Write-Host "Latest version: $latest_version"
+          echo "::set-output name=version::$latest_version"
       
       - name: Publish to GitHub Packages
         run: |
