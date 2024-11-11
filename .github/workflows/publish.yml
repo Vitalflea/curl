@@ -20,12 +20,9 @@ jobs:
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: '6.0'  # Set your required .NET version
-
-      - name: Pack the project
-        run: dotnet pack --configuration Release --output ./nupkg
-
+          
       - name: Authenticate with GitHub Packages
-        run: dotnet nuget add source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --name GitHubPackages --username ${{ github.actor }} --password ${{ secrets.NUGET_TOKEN }} --store-password-in-clear-text
+        run: dotnet nuget add source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" --name GitHubPackages --username ${{ github.actor }} --password ${{ secrets.PASSWORD }} --store-password-in-clear-text
 
       - name: Publish to GitHub Packages
         run: |
